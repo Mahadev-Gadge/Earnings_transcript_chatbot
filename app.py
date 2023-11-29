@@ -4,7 +4,7 @@ import os
 import time
 
 # OpenAI api key
-os.environ['OPENAI_API_KEY']=st.sidebar.text_input("Enter OpenAI_API_KEY:")
+os.environ['OPENAI_API_KEY']=st.sidebar.text_input("Enter OpenAI_API_KEY:", type='password')
 
 st.title(""":violet[**Earnings transcripts chatbot**]""")
 
