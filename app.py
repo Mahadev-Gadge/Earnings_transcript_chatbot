@@ -4,7 +4,7 @@ import os
 import time
 
 # OpenAI api key
-os.environ['OPENAI_API_KEY']=st.sidebar.text_input("Enter OpenAI_API_KEY:", type='password')
+api_key=st.sidebar.text_input("Enter OpenAI_API_KEY:", type='password')
 
 st.title(""":violet[**Earnings transcripts chatbot**]""")
 
@@ -20,7 +20,7 @@ uploaded_file=st.sidebar.file_uploader(":blue[**Choose a file**]")
 def earnings_transcript_assistant():
 
     # Initialize the client
-    client=openai.OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    client=openai.OpenAI(api_key=api_key)
     
     # Create assistant and upload knowledge base file.
     assistant = client.beta.assistants.create(name="Finance Assistant", instructions="You are a finance support chatbot. Use knowledge from provided file to answer to user queries.", model="gpt-4-1106-preview", tools=[{"type": "retrieval"}])
