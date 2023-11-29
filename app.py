@@ -2,8 +2,7 @@ import streamlit as st
 import openai
 import os
 import time
-from earnings_transcript_scraper import data_scraper
-import pdb
+
 # OpenAI api key
 os.environ['OPENAI_API_KEY']='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'
 
@@ -26,12 +25,7 @@ def earnings_transcript_assistant():
     # Create assistant and upload knowledge base file.
     assistant = client.beta.assistants.create(name="Finance Assistant", instructions="You are a finance support chatbot. Use knowledge from provided file to answer to user queries.", model="gpt-4-1106-preview", tools=[{"type": "retrieval"}])
     
-    pdb.set_trace()
-    if uploaded_file:
-        file = client.files.create(file=open(uploaded_file.name, "rb"), purpose='assistants')
-    else:
-        print("upload didn't happen")
-        file = client.files.create(file=open('/home/mahadev/Desktop/BOE_Group/Finance_assistant/transcript.txt', "rb"), purpose='assistants')
+    file = client.files.create(file=open(uploaded_file.name, "rb"), purpose='assistants')
 
     assistant=client.beta.assistants.update(assistant.id, file_ids=[file.id])
     
