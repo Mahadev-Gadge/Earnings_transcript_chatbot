@@ -6,7 +6,7 @@ import time
 import pdb
 
 # OpenAI api key
-api_key=st.sidebar.text_input("Enter OpenAI_API_KEY:", type='password')
+#api_key=st.sidebar.text_input("Enter OpenAI_API_KEY:", type='password')
 
 st.title(""":violet[**Earnings transcripts chatbot**]""")
 
