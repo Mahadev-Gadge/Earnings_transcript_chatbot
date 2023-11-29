@@ -22,7 +22,7 @@ uploaded_file=st.sidebar.file_uploader(":blue[**Choose a file**]")
 def earnings_transcript_assistant():
 
     # Initialize the client
-    client=openai.OpenAI(api_key=api_key)
+    client=openai.OpenAI(api_key=st.secrets["api_key"])
     
     # Create assistant and upload knowledge base file.
     assistant = client.beta.assistants.create(name="Finance Assistant", instructions="You are a finance support chatbot. Use knowledge from provided file to answer to user queries.", model="gpt-4-1106-preview", tools=[{"type": "retrieval"}])
