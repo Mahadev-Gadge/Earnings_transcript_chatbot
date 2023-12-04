@@ -2,7 +2,6 @@ import streamlit as st
 import openai
 import time
 import os
-import pdb
 #from earnings_transcript_scraper import data_scraper
 
 # Assistant title.
@@ -26,7 +25,6 @@ def earnings_transcript_assistant():
     quarter=st.sidebar.selectbox("**3. Which quarter transcript are you interested in:**", ('Q1','Q2','Q3','Q4'))
 
     if st.sidebar.button("Submit"):
-        #pdb.set_trace()
         if ticker_slug is not None:
             filename="/home/mahadev/Desktop/BOE_Group/Finance_assistant/earnings_transcripts"+'/'+ticker_slug+'/'+ticker_slug+'-'+quarter+'-'+str(year)+'-'+"earnings_transcript.txt"
             st.write(filename)
@@ -72,9 +70,5 @@ def earnings_transcript_assistant():
         role = msg.role
         content = msg.content[0].text.value
         st.write(f"{role.capitalize()}: {content}")
-
-
-    #pdb.set_trace()
-    
 
 earnings_transcript_assistant()
