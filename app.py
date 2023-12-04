@@ -28,11 +28,12 @@ def earnings_transcript_assistant():
         if ticker_slug is not None:
             filename=ticker_slug+'-'+quarter+'-'+str(year)+'-'+"earnings_transcript.txt"
             st.write("Upon considering your inputs retrieving files from database and filename is", filename)
-        else:
-            st.write("Please enter company name.") 
             with open(filename, 'rb') as f:
                text_contents=f.read()
             st.download_button('Download some text', text_contents)
+        else:
+            st.write("Please enter company name.") 
+
                
         #if os.path.exists(filename):
         #del st.session_state['client']
