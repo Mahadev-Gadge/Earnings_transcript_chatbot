@@ -26,7 +26,7 @@ def earnings_transcript_assistant():
 
     if st.sidebar.button("Submit"):
         if ticker_slug is not None:
-            filename="/home/mahadev/Desktop/BOE_Group/Finance_assistant/earnings_transcripts"+'/'+ticker_slug+'/'+ticker_slug+'-'+quarter+'-'+str(year)+'-'+"earnings_transcript.txt"
+            filename=ticker_slug+'-'+quarter+'-'+str(year)+'-'+"earnings_transcript.txt"
             st.write(filename)
         else:
             st.write("Please enter company name.") 
