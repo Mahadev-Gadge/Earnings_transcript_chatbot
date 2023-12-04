@@ -57,7 +57,29 @@ def earnings_transcript_assistant():
             for msg in messages.data:
                 role = msg.role
                 content = msg.content[0].text.value
-                st.write(f"{role.capitalize()}: {content}")  
+                st.write(f"{role.capitalize()}: {content}")
+        
+        st.session_state.thread = st.session_state.client.beta.threads.create()
+
+        st.session_state.file = st.session_state.client.files.create(file=open(filename, "rb"), purpose='assistants')
+        
+        st.sidebar.write("Requested file id is: ", st.session_state.file.id)
+        st.session_state.assistant =st.session_state.client.beta.assistants.update(assistant_id=st.session_state.assistant.id, file_ids=[st.session_state.file.id])
+               
+        content = st.text_input("Ask you question","Tell me about this company?")
+               
+        message = st.session_state.client.beta.threads.messages.create(thread_id=st.session_state.thread.id, role="user", content=content)
+        run = st.session_state.client.beta.threads.runs.create(thread_id=st.session_state.thread.id, assistant_id=st.session_state.assistant.id)
+        # Poll for the run to complete and retrieve the assistant's messages
+        while run.status != 'completed':
+            time.sleep(1)
+            run = st.session_state.client.beta.threads.runs.retrieve(thread_id=st.session_state.thread.id, run_id=run.id)
+        # Retrieve messages added by the assistant
+        messages = st.session_state.client.beta.threads.messages.list(thread_id=st.session_state.thread.id)
+        for msg in messages.data:
+            role = msg.role
+            content = msg.content[0].text.value
+            st.write(f"{role.capitalize()}: {content}")
     else:
         st.write("Please upload transcript.")
            
