@@ -1,61 +1,82 @@
 import streamlit as st
 import openai
-import os
 import time
-#from earnings_transcript_scraper import data_scraper
+import os
 import pdb
+#from earnings_transcript_scraper import data_scraper
 
-# OpenAI api key
-#api_key=st.sidebar.text_input("Enter OpenAI_API_KEY:", type='password')
+api_key="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"
 
-st.title(""":violet[**Earnings transcripts chatbot**]""")
+# Assistant title.
+st.title("""**Earnings transcripts assistant**""")
 
-#ticker_slug=st.sidebar.text_input("*Enter company code:*")
+st.markdown(""" This assistant helps to answer user queries related to 3M company historical earnings transcript. """)
 
-#earnings_articles_links=data_scraper.get_earnings_transcripts(ticker_slug=ticker_slug, page_number=10)
-st.divider()
+st.sidebar.subheader("**User inputs:**")
 
-#st.sidebar.header(""" Input files """)
-uploaded_file=st.sidebar.file_uploader(":blue[**Choose a file**]")
+#Earnings_articles_links=data_scraper.get_earnings_transcripts(ticker_slug=ticker_slug, page_number=10)
 
 # OpenAI assistant 
 def earnings_transcript_assistant():
+       
+    #uploaded_file=st.sidebar.file_uploader(":blue[**Choose a transcript**]")
+    #if uploaded_file is not None:
+    ticker_slug=st.sidebar.text_input("**1. Enter company code:**")
+    time.sleep(0.5)
+    year=st.sidebar.slider("**2. Which year transcript are you interested in:**", 2005, 2023, 2023)
+    time.sleep(0.5)
+    quarter=st.sidebar.selectbox("**3. Which quarter transcript are you interested in:**", ('Q1','Q2','Q3','Q4'))
 
-    # Initialize the client
-    client=openai.OpenAI(api_key=st.secrets["api_key"])
-    
-    # Create assistant and upload knowledge base file.
-    assistant = client.beta.assistants.create(name="Finance Assistant", instructions="You are a finance support chatbot. Use knowledge from provided file to answer to user queries.", model="gpt-4-1106-preview", tools=[{"type": "retrieval"}])
-    
-    #pdb.set_trace()
-    file = client.files.create(file=open(uploaded_file.name, "rb"), purpose='assistants')
+    if st.sidebar.button("Submit"):
+        #pdb.set_trace()
+        if ticker_slug is not None:
+            filename="/home/mahadev/Desktop/BOE_Group/Finance_assistant/earnings_transcripts"+'/'+ticker_slug+'/'+ticker_slug+'-'+quarter+'-'+str(year)+'-'+"earnings_transcript.txt"
+            st.write(filename)
+        else:
+            st.write("Please enter company name.") 
 
-    assistant=client.beta.assistants.update(assistant.id, file_ids=[file.id])
-    
-    thread = client.beta.threads.create()
-    content=st.text_input(" Ask your question ")
+        #if os.path.exists(filename):
+        #del st.session_state['client']
+        if 'client' not in st.session_state:
+            
+            st.session_state.client = openai.OpenAI(api_key=api_key) 
 
-    message = client.beta.threads.messages.create(thread_id=thread.id, role="user", content=content)
-    run = client.beta.threads.runs.create(thread_id=thread.id, assistant_id=assistant.id)
-    
-    # creating a function to check whether the Run is completed or not
-    def poll_run(run, thread):
-        while run.status != "completed":
-            run = client.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
-            time.sleep(0.5)
-        return run
+            st.session_state.assistant = st.session_state.client.beta.assistants.create(name="Finance Assistant", instructions="You are a finance support chatbot. Use knowledge from provided file to answer to user queries.", model="gpt-4-1106-preview", tools=[{"type": "retrieval"}])
+
+        else:
+            st.session_state.thread = st.session_state.client.beta.threads.create()
+
+            st.session_state.file = st.session_state.client.files.create(file=open(filename, "rb"), purpose='assistants')
         
-    # waiting for the run to be completed
-    run = poll_run(run, thread)
+            st.sidebar.write("Requested file id is: ", st.session_state.file.id)
+            st.session_state.assistant =st.session_state.client.beta.assistants.update(assistant_id=st.session_state.assistant.id, file_ids=[st.session_state.file.id])
+    else:
+        st.write("Please upload transcript.")    
+    
+    content=st.selectbox(" Ask your question ", 
+                         ("Which year and quarter transcript is this belongs to?",
+                          "What is company name mentioned in the transcript?",
+                          "Briefly summarize about this transcript?",
+                          "Briefly explain about company name mentioned in the transcript?",
+                          "What are the major financial take away points from the transcript?"
+                          "Who is the CEO of company name mentioned in the transcript?")   
+                         )
 
-    # extracting the message
-    messages = client.beta.threads.messages.list(thread_id=thread.id)
+    message = st.session_state.client.beta.threads.messages.create(thread_id=st.session_state.thread.id, role="user", content=content)
+    run = st.session_state.client.beta.threads.runs.create(thread_id=st.session_state.thread.id, assistant_id=st.session_state.assistant.id)
+    # Poll for the run to complete and retrieve the assistant's messages
+    while run.status != 'completed':
+        time.sleep(1)
+        run = st.session_state.client.beta.threads.runs.retrieve(thread_id=st.session_state.thread.id, run_id=run.id)
+    # Retrieve messages added by the assistant
+    messages = st.session_state.client.beta.threads.messages.list(thread_id=st.session_state.thread.id)
+    for msg in messages.data:
+        role = msg.role
+        content = msg.content[0].text.value
+        st.write(f"{role.capitalize()}: {content}")
 
-    for m in messages:
-        st.write(f"{m.role}: {m.content[0].text.value}")
+
+    #pdb.set_trace()
+    
 
 earnings_transcript_assistant()
-
-
-
-
