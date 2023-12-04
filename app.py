@@ -30,7 +30,7 @@ def earnings_transcript_assistant():
             st.write("Upon considering your inputs retrieving files from database and filename is", filename)
             with open(filename, 'r') as f:
                text_contents=f.read()
-            st.download_button('Download some text', text_contents)
+            st.download_button('Download transcript', text_contents)
         else:
             st.write("Please enter company name.") 
 
