@@ -38,17 +38,16 @@ def earnings_transcript_assistant():
             st.session_state.client = openai.OpenAI(api_key=st.secrets['api_key']) 
 
             st.session_state.assistant = st.session_state.client.beta.assistants.create(name="Finance Assistant", instructions="You are a finance support chatbot. Use knowledge from provided file to answer to user queries.", model="gpt-4-1106-preview", tools=[{"type": "retrieval"}])
-
-        else:
-            st.session_state.thread = st.session_state.client.beta.threads.create()
-
-            st.session_state.file = st.session_state.client.files.create(file=open(filename, "rb"), purpose='assistants')
-        
-            st.sidebar.write("Requested file id is: ", st.session_state.file.id)
-            st.session_state.assistant =st.session_state.client.beta.assistants.update(assistant_id=st.session_state.assistant.id, file_ids=[st.session_state.file.id])
     else:
-        st.write("Please upload transcript.")    
-    
+        st.write("Please upload transcript.")
+           
+    st.session_state.thread = st.session_state.client.beta.threads.create()
+
+    st.session_state.file = st.session_state.client.files.create(file=open(filename, "rb"), purpose='assistants')
+        
+    st.sidebar.write("Requested file id is: ", st.session_state.file.id)
+    st.session_state.assistant =st.session_state.client.beta.assistants.update(assistant_id=st.session_state.assistant.id, file_ids=[st.session_state.file.id])
+        
     content=st.selectbox(" Ask your question ", 
                          ("Which year and quarter transcript is this belongs to?",
                           "What is company name mentioned in the transcript?",
