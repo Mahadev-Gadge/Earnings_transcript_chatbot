@@ -52,35 +52,21 @@ def earnings_transcript_assistant():
                                  "What are the major financial take away points from the transcript?"
                                  "Who is the CEO of company name mentioned in the transcript?")   
                                 )
-
+                     
+            content = st.text_input("Ask you question ", "Which company transcript is this belongs to")   
             if content is not None:
                 message = st.session_state.client.beta.threads.messages.create(thread_id=st.session_state.thread.id, role="user", content=content)
                 run = st.session_state.client.beta.threads.runs.create(thread_id=st.session_state.thread.id, assistant_id=st.session_state.assistant.id)
                 # Poll for the run to complete and retrieve the assistant's messages
                 while run.status != 'completed':
-                    time.sleep(1)
-                    run = st.session_state.client.beta.threads.runs.retrieve(thread_id=st.session_state.thread.id, run_id=run.id)
+                     time.sleep(1)
+                     run = st.session_state.client.beta.threads.runs.retrieve(thread_id=st.session_state.thread.id, run_id=run.id)
                 # Retrieve messages added by the assistant
                 messages = st.session_state.client.beta.threads.messages.list(thread_id=st.session_state.thread.id)
                 for msg in messages.data:
                     role = msg.role
                     content = msg.content[0].text.value
-                    st.write(f"{role.capitalize()}: {content}")
-            else:       
-                content = st.text_input("Ask you question ", "Which company transcript is this belongs to")   
-                if content is not None:
-                    message = st.session_state.client.beta.threads.messages.create(thread_id=st.session_state.thread.id, role="user", content=content)
-                    run = st.session_state.client.beta.threads.runs.create(thread_id=st.session_state.thread.id, assistant_id=st.session_state.assistant.id)
-                    # Poll for the run to complete and retrieve the assistant's messages
-                    while run.status != 'completed':
-                        time.sleep(1)
-                        run = st.session_state.client.beta.threads.runs.retrieve(thread_id=st.session_state.thread.id, run_id=run.id)
-                    # Retrieve messages added by the assistant
-                    messages = st.session_state.client.beta.threads.messages.list(thread_id=st.session_state.thread.id)
-                    for msg in messages.data:
-                        role = msg.role
-                        content = msg.content[0].text.value
-                        st.write(f"{role.capitalize()}: {content}")  
+                    st.write(f"{role.capitalize()}: {content}")  
     else:
         st.write("Please upload transcript.")
            
