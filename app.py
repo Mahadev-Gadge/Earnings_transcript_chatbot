@@ -26,7 +26,7 @@ def earnings_transcript_assistant():
 
     if st.sidebar.button("Submit"):
         filename=ticker_slug+'-'+quarter+'-'+str(year)+'-'+"earnings_transcript.txt"
-        st.write("Upon considering your inputs retrieving files from database and filename is", filename)
+        st.write("Upon considering your inputs retrieving file from database and found filename is:", filename)
         with open(filename, 'r') as f:
             text_contents=f.read()
             st.download_button('Download transcript', text_contents)
@@ -44,7 +44,7 @@ def earnings_transcript_assistant():
             st.sidebar.write("Requested file id is: ", st.session_state.file.id)
             st.session_state.assistant =st.session_state.client.beta.assistants.update(assistant_id=st.session_state.assistant.id, file_ids=[st.session_state.file.id])
                
-            content=st.selectbox(" Ask your question ", 
+            content=st.sidebar.selectbox(" Ask your question ", 
                                 ("Which year and quarter transcript is this belongs to?",
                                  "What is company name mentioned in the transcript?",
                                  "Briefly summarize about this transcript?",
@@ -52,7 +52,8 @@ def earnings_transcript_assistant():
                                  "What are the major financial take away points from the transcript?"
                                  "Who is the CEO of company name mentioned in the transcript?")   
                                 )
-       
+            if content is None:
+                   content=st.text_input("Ask you question ")
             message = st.session_state.client.beta.threads.messages.create(thread_id=st.session_state.thread.id, role="user", content=content)
             run = st.session_state.client.beta.threads.runs.create(thread_id=st.session_state.thread.id, assistant_id=st.session_state.assistant.id)
             # Poll for the run to complete and retrieve the assistant's messages
