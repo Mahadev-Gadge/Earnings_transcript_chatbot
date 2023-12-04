@@ -35,7 +35,7 @@ def earnings_transcript_assistant():
         #del st.session_state['client']
         if 'client' not in st.session_state:
             
-            st.session_state.client = openai.OpenAI(api_key=api_key) 
+            st.session_state.client = openai.OpenAI(api_key=st.secrets['api_key']) 
 
             st.session_state.assistant = st.session_state.client.beta.assistants.create(name="Finance Assistant", instructions="You are a finance support chatbot. Use knowledge from provided file to answer to user queries.", model="gpt-4-1106-preview", tools=[{"type": "retrieval"}])
 
