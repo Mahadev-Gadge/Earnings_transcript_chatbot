@@ -5,8 +5,6 @@ import os
 import pdb
 #from earnings_transcript_scraper import data_scraper
 
-api_key="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"
-
 # Assistant title.
 st.title("""**Earnings transcripts assistant**""")
 
