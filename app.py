@@ -50,9 +50,9 @@ def earnings_transcript_assistant():
             run = st.session_state.client.beta.threads.runs.create(thread_id=st.session_state.thread.id, assistant_id=st.session_state.assistant.id)
             # Poll for the run to complete and retrieve the assistant's messages
             while run.status != 'completed':
-            time.sleep(1)
-            run = st.session_state.client.beta.threads.runs.retrieve(thread_id=st.session_state.thread.id, run_id=run.id)
-            # Retrieve messages added by the assistant
+                time.sleep(1)
+                run = st.session_state.client.beta.threads.runs.retrieve(thread_id=st.session_state.thread.id, run_id=run.id)
+                # Retrieve messages added by the assistant
             messages = st.session_state.client.beta.threads.messages.list(thread_id=st.session_state.thread.id)
             for msg in messages.data:
                role = msg.role
