@@ -30,7 +30,10 @@ def earnings_transcript_assistant():
             st.write("Upon considering your inputs retrieving files from database and filename is", filename)
         else:
             st.write("Please enter company name.") 
-
+            with open(filename, 'rb') as f:
+               text_contents=f.read()
+            st.download_button('Download some text', text_contents)
+               
         #if os.path.exists(filename):
         #del st.session_state['client']
         if 'client' not in st.session_state:
