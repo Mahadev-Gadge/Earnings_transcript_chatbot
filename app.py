@@ -44,7 +44,7 @@ def earnings_transcript_assistant():
             st.sidebar.write("Requested file id is: ", st.session_state.file.id)
             st.session_state.assistant =st.session_state.client.beta.assistants.update(assistant_id=st.session_state.assistant.id, file_ids=[st.session_state.file.id])
                
-            content = st.text_input("Ask you question ")
+            content = st.text_input("Ask you question","Tell me about this company?")
                
             message = st.session_state.client.beta.threads.messages.create(thread_id=st.session_state.thread.id, role="user", content=content)
             run = st.session_state.client.beta.threads.runs.create(thread_id=st.session_state.thread.id, assistant_id=st.session_state.assistant.id)
