@@ -27,7 +27,7 @@ def earnings_transcript_assistant():
     if st.sidebar.button("Submit"):
         if ticker_slug is not None:
             filename=ticker_slug+'-'+quarter+'-'+str(year)+'-'+"earnings_transcript.txt"
-            st.write(filename)
+            st.write("Upon considering your inputs retrieving files from database and filename is", filename)
         else:
             st.write("Please enter company name.") 
 
