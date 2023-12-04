@@ -70,7 +70,7 @@ def earnings_transcript_assistant():
             content = st.text_input("Ask you question ", "Which company transcript is this belongs to")   
             if content is not None:
                 message = st.session_state.client.beta.threads.messages.create(thread_id=st.session_state.thread.id, role="user", content=content)
-                                run = st.session_state.client.beta.threads.runs.create(thread_id=st.session_state.thread.id, assistant_id=st.session_state.assistant.id)
+                run = st.session_state.client.beta.threads.runs.create(thread_id=st.session_state.thread.id, assistant_id=st.session_state.assistant.id)
                 # Poll for the run to complete and retrieve the assistant's messages
                 while run.status != 'completed':
                     time.sleep(1)
